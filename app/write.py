@@ -1,8 +1,11 @@
 import csv
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from fpdf import FPDF
+from fpdf import FPDF, HTMLMixin
 import pprint
+
+class MyFPDF(FPDF, HTMLMixin):
+    pass
 
 def write_projects_csv(teams, destination):
 
@@ -88,7 +91,7 @@ def write_project_pdf_contract(teams, destination):
         project = team.project
         students = team.students
         # creating the pdf document
-        pdf = FPDF(format='letter', unit='in')
+        pdf = MyFPDF()
         pdf.add_page()
         pdf.set_font('Times', '', 10.0)
         effectivePageWidth = pdf.w - 2*pdf.l_margin
@@ -96,9 +99,9 @@ def write_project_pdf_contract(teams, destination):
         # contract text
         pdf.multi_cell(effectivePageWidth, 0.15,
                     f'Dear {project.client_first_name},')
-        pdf.multi_cell(effectivePageWidth, 0.15,
-                    'These students digitally signed the IP+NDA agreement "UC Merced Innovate to Grow Program - Student Registration and Agreement" with UC Merced ID credentials:')
-        pdf.multi_cell(effectivePageWidth, 0.15, '\n')
+        pdf.write_html(
+                    '<p><font size = 10 face="Times"> These <b>students digitally signed the IP+NDA agreement</b> "UC Merced Innovate to Grow Program - Student Registration and Agreement" with UC Merced ID credentials </font> </p>')
+        pdf.multi_cell(effectivePageWidth, 10, '\n')
 
         # student information table
         studentTableTitle = ['Timestamp', 'First Name', 'Last Name', 'Email']
@@ -120,8 +123,10 @@ def write_project_pdf_contract(teams, destination):
             pdf.ln(th)
 
         # new line
-        pdf.multi_cell(effectivePageWidth, 0.15, '\n')
-
+        pdf.multi_cell(effectivePageWidth, 5, '\n')
+        pdf.write_html('<p> <font size = 10 face="Times"> to <b>participate in your project:</b> </font></p>')
+        pdf.multi_cell(effectivePageWidth, 10, '\n')
+        pdf.set_font('Times', '', 10.0)
         # project information table
         projectTable = [['Project ID:', project.project_id],
                         ['Project Title:', project.project_title, ],
@@ -137,15 +142,17 @@ def write_project_pdf_contract(teams, destination):
             pdf.ln(th)
 
         # contract text cont.
-        pdf.multi_cell(effectivePageWidth, 0.15, '\n')
-        pdf.multi_cell(effectivePageWidth, 0.15, '''We have a digital record and timestamp of their agreement: the table above includes their credentials and time of acceptance. For your reference this is the language of the agreement that the students digitally signed.
-    Thank you for your participation in the Innovate to Grow program. Please let us know if you have any questions, or special circumstances to address.
-
-    Stefano Foresti
-    +1-801-971-3680
-    Stefano.Foresti@UCMerced.edu
-    University of California Merced, Director of Innovation -> engineering.ucmerced.edu ''')
-        pdf.ln(0.5)
+        pdf.multi_cell(effectivePageWidth, 10, '\n')
+        pdf.write_html('<p> <font size = 10 face="Times"><b>We have a digital record and timestamp of their agreement:</b> the table above includes their credentials and time of acceptance.</font> </p>')
+        pdf.multi_cell(effectivePageWidth, 2, '\n')
+        pdf.write_html('<p> <font size = 10 face="Times"><b>For your reference </b><a href = \'https://docs.google.com/document/d/1aj17d_u5Fir1_Q3TaTISZKyXnwN_JJkqdOux-TC_4ks/edit?usp=sharing\'><font size = 10 face="Times">this is the language </font></a>of the agreement that the students digitally signed.</font></p>')
+        pdf.multi_cell(effectivePageWidth, 5, '\n')
+        pdf.write_html('<p> <font size = 10 face="Times"> Thank you for your participation in the Innovate to Grow program. Please let us know if you have any questions, or special circumstances to address.</font></p>')
+        pdf.multi_cell(effectivePageWidth, 10, '\n')
+        pdf.set_font('Times', '', 10.0)
+        pdf.multi_cell(effectivePageWidth, 5, 'Stefano Foresti\n+1-801-971-3680\nStefano.Foresti@UCMerced.edu\n University of California Merced, Director of Innovation -> engineering.ucmerced.edu')
+        pdf.write_html('<p> <font size = 10 face="Times">website:<a href = \'https://docs.google.com/document/d/1aj17d_u5Fir1_Q3TaTISZKyXnwN_JJkqdOux-TC_4ks/edit?usp=sharing\'><font size = 8 face="Times">innovatetogrow.ucmerced.edu</font></a> </font> </p>')
+        pdf.ln(1)
 
         # saves as filename
         pdf.output(destination+'/2020-Jan-Spring-CAP-StudentAgreement-Team'+str(team.team_number) +

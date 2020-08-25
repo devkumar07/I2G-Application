@@ -6,6 +6,7 @@ from write import *
 from qualtrics_data_processing import *
 from Team import *
 
+#adding comments
 def read_students(file):
     students = []
     bad_data = []
@@ -19,15 +20,15 @@ def read_students(file):
             temp = []
             # convert string preferances into numericals
             for pref in row[14:]:
-                if pref == 'Definitely yes':
+                if pref == '5':
                     temp.append(5)
-                elif pref == 'Probably yes':
+                elif pref == '4':
                     temp.append(4)
-                elif pref == 'Maybe':
+                elif pref == '3':
                     temp.append(3)
-                elif pref == 'Probably not':
+                elif pref == '2':
                     temp.append(2)
-                elif pref == 'No thanks':
+                elif pref == '1':
                     temp.append(1)
                 else:
                     temp.append(-1)
@@ -52,15 +53,15 @@ def read_students_new(file):
             temp = []
             # convert string preferances into numericals
             for pref in row[14:]:
-                if pref == 'Definitely yes':
+                if pref == '5':
                     temp.append(5)
-                elif pref == 'Probably yes':
+                elif pref == '4':
                     temp.append(4)
-                elif pref == 'Maybe':
+                elif pref == '3':
                     temp.append(3)
-                elif pref == 'Probably not':
+                elif pref == '2':
                     temp.append(2)
-                elif pref == 'No thanks':
+                elif pref == '1':
                     temp.append(1)
                 else:
                     temp.append(-1)
