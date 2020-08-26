@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 #this function creates a bipartite graph before matching and assigns necessart capacity to each project
 
-def create_graph(students, projects, min_team):
+def create_graph(students, projects):
     G = nx.DiGraph()
     current = 0
     for p in projects:
@@ -19,14 +19,14 @@ def create_graph(students, projects, min_team):
                 G.add_node(p.project_id, bipartite = 1)
                 G.add_edge(s.email, p.project_id, capacity = 1.0)
                 G.add_edge('source',s.email,capacity = 1.0)
-                G.add_edge(p.project_id,'sink', capacity = min_team)
+                G.add_edge(p.project_id,'sink', capacity = 3.0)
                 s.assigned = True
         current = current + 1
     return G
 
 #This function outputs a team array that consists of matched students and teams
-def match_students(students, projects, min_team):
-    G = create_graph(students, projects, min_team)
+def match_students(students, projects):
+    G = create_graph(students, projects)
     teams = []
     flow_value, flow_dict = nx.maximum_flow(G, 'source', 'sink', capacity = 'capacity', flow_func=edmonds_karp)
     R = edmonds_karp(G,'source','sink', capacity='capacity')
@@ -45,7 +45,7 @@ def match_students(students, projects, min_team):
     students_left = find_non_matched_students(R, students, matched_students)
     avaliable_projects = find_avaliable_projects(R, projects)
     if len(students_left) > 0:
-        teams = match_remaining_students(teams, G, flow_dict,students_left,avaliable_projects, projects, min_team)
+        teams = match_remaining_students(teams, G, flow_dict,students_left,avaliable_projects, projects)
     return teams
 
 #This function finds those students that were not matched or were not present in the bipartite graph
@@ -70,8 +70,7 @@ def find_avaliable_projects(flow_dict,projects):
     return proj
 
 #This function matches the remaining students with the remaining projects
-def match_remaining_students(teams, G, flow_dict, students, projects, main_projects, min_teams):
-    limit = min_teams + 1
+def match_remaining_students(teams, G, flow_dict, students, projects, main_projects):
     for p in projects:
         index = find_team_index(teams, p.project_id)
         studs = teams[index].students
@@ -86,7 +85,7 @@ def match_remaining_students(teams, G, flow_dict, students, projects, main_proje
         for p in main_projects:
             index = find_team_index(teams, p.project_id)
             studs = teams[index].students
-            if len(studs) < limit:
+            if len(studs) < 4:
                 if len(students) == 1:
                     studs.append(students[0])
                     teams[index].students = studs

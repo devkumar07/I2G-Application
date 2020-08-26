@@ -1,13 +1,16 @@
-﻿Students who have not finished qualtrics form,,
+﻿Students who have not finished qualtrics form
 First Name,Last Name,Email/UcmNetID
 Alex Hales,0,ahales
-Kane Williamson,0,kwilliamson
-Shane  Warne,0,swarne
+Nicholas Pooran,0,npooran
 Andrew Tye,0,atye
 David Willey,0,dwilley
 Joe Root,0,jroot
+Shruti Chakrborty,0,schakraborty
 "
-",,
-,,
-,,
-,,
+"
+Students who have incomplete qualtrics data and are not being considered for matching
+First Name,Last Name,Email/UcmNetID
+"
+"
+Students who have disagreed
+First Name,Last Name,Email/UcmNetID

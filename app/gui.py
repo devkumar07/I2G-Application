@@ -76,20 +76,17 @@ class StudentMatcher(tk.Frame):
         self.student_file_button()
         self.project_file_button()
         self.output_directory_button()
-        self.min_people_team_box()
         self.run_button()
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(9, weight=1)
-        self.grid_rowconfigure(10, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
-        self.grid_columnconfigure(4, weight=1)
 
         self.button = tk.Button(
             self, text="<- BACK",
             command=lambda: controller.show_frame(StartPage))
-        self.button.grid(column=1, row=10, padx=20, pady=10)
+        self.button.grid(column=1, row=8, padx=20, pady=10)
 
     def student_file_button(self):
         self.button = tk.Button(
@@ -126,24 +123,19 @@ class StudentMatcher(tk.Frame):
         self.output_location = filedialog.askdirectory()
         self.label = tk.Label(self, text=self.output_location)
         self.label.grid(column=2, row=7, padx=20, pady=0)
-    
-    def min_people_team_box(self):
-        self.min_people_team = tk.Entry(self)
-        self.min_people_team.grid(column=2, row=8)
-        self.label = tk.Label(self, text="Minimum students per team")
-        self.label.grid(column=1, row=8, padx=20, pady=0)
 
     def run_button(self):
         self.button = tk.Button(self, text="RUN ->",
                                 command=lambda: self.runner())
-        self.button.grid(column=4, row=10, padx=20, pady=10)
-
+        self.button.grid(column=3, row=8, padx=20, pady=10)
 
     def runner(self):
         self.students = read_students_new(self.student_filename.name)
         self.projects = read_projects(self.project_filename.name)
+
         self.students = clean_data_students(self.students)
-        teams = match_students(self.students, self.projects,float((self.min_people_team).get()))
+
+        teams = match_students(self.students, self.projects)
         write_projects_csv(teams, self.output_location)
         messagebox.showinfo("Title", "Done")
 
@@ -169,7 +161,7 @@ class CatCoursesMatcher(tk.Frame):
         self.button = tk.Button(
             self, text="<- BACK",
             command=lambda: controller.show_frame(StartPage))
-        self.button.grid(column=1, row=10, padx=20, pady=10)
+        self.button.grid(column=1, row=8, padx=20, pady=10)
 
     def qualtrics_file_button(self):
         self.button = tk.Button(
